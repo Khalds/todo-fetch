@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('input')
   const result = document.getElementById('result')
 
+  //? Кнопка для отправления вводимых данных
   btn.addEventListener('click', () => {
     if (input.value === '') return
     createDeleteElement(input.value, false, Date.now())
@@ -13,8 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Заметка добавлена');
   })
 
-  fetchAndRenderUsers()
-
+  //? Fetch запрос на получение
   async function fetchAndRenderUsers() {
     try {
       const res = await fetch(usersUrl)
@@ -25,7 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Метод для перебора полученны
+  fetchAndRenderUsers()
+
+  //? Метод для перебора полученных данных из сервера
   function renderUsersByUrl(value) {
     value.map((item) => {
       createDeleteElement(item.title, item.completed, item.id)
@@ -37,8 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
   //? Create and delete todo
   const createDeleteElement = (value, complete, item) => {
 
+    //? Пустой массив для хранения полученных данных
     const arr = []
 
+    //? Структура получения вводимых данных в объект
     const obj = {
       id: item,
       title: value,
@@ -47,28 +51,28 @@ document.addEventListener('DOMContentLoaded', () => {
     arr.push(obj)
     console.log(arr);
 
-    //? Add li
+    //? Добавление строки для todo
     const li = document.createElement('li')
     li.className = 'li'
     li.textContent = value
 
-    //? Add button
+    //? Добавление кнопки для удаления
     const btn = document.createElement('button')
     btn.className = 'btn'
     btn.textContent = 'x'
     li.appendChild(btn)
 
+    //? Добавление чекбокса
     const checkbox = document.createElement('input')
-
     checkbox.type = 'checkbox'
-
     li.prepend(checkbox)
 
-    //? Remove Todo
+    //? Удаление тодо при клике
     btn.addEventListener('click', () => {
       deleteTodo(obj.id)
     })
 
+    //? Функция для добавление галочки в чекбокс при получении данных
     function getChecked(value) {
       if (value.completed === true) {
         li.classList.toggle('li-active')
@@ -77,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     getChecked(obj)
 
+    //? При клике проверяет состояние чекбокса и изменяет
     li.addEventListener('click', () => {
       li.classList.toggle('li-active')
       patchTodoList(obj.id)
@@ -87,6 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })
 
+
+    //? Fetch запрос на добавление
     const fetchSettingsForPost = {
       method: 'POST',
       headers: {
@@ -106,6 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     postTodoList()
 
+
+    //? Fetch запрос на изменение
     const fetchSettingsForPatch = {
       method: 'PATCH',
       headers: {
@@ -126,6 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+
+    //? Fetch запрос на удаление
     async function deleteTodo(id) {
       try {
         const res = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
